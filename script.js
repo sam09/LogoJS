@@ -147,7 +147,11 @@ function run(input) {
 	var tokens = lex(input);
 	parse(tokens);
 }
-
+function exec(){
+	var input = document.getElementById("cmd").value;
+	document.getElementById("cmd").value = "";
+	run(input);
+}
 var canvas, ctx, angle, prevX, prevY, base;
 
 
