@@ -82,7 +82,7 @@ function parse(tokens) {
 		
 		if( tokens[i].type == "command" ) {
 			//console.log(tokens[i].type);
-			if(tokens[i].value == "FW" || tokens[i].value == "BK" ) {
+			if(tokens[i].value == "FD" || tokens[i].value == "BK" ) {
 				draw(tokens[i].value, tokens[i+1].value);
 				i = i+2;
 			}
@@ -90,8 +90,10 @@ function parse(tokens) {
 				turn(tokens[i].value, tokens[i+1].value);			
 				i = i+2;
 			}
-			else
+			else {
+				set(tokens[i].value);
 				i++;
+			}
 		}
 		else {
 			i++;
@@ -105,7 +107,7 @@ function draw( action, steps) {
 	var stepsY = steps * Math.sin(angle);
 
 
-	if(action == "FW" )
+	if(action == "FD" )
 		stepsY *= (-1);
 
 	if (action == "BK")
@@ -118,12 +120,14 @@ function draw( action, steps) {
 	var moveY = prevY + stepsY;
 	
 	
-	ctx.beginPath();
-	ctx.strokeStyle = "#AA00EE";
-	ctx.moveTo(prevX, prevY );
-	ctx.lineTo(moveX, moveY);
-	ctx.closePath();
-	ctx.stroke();
+	if( !penup) {
+		ctx.beginPath();
+		ctx.strokeStyle = "#AA00EE";
+		ctx.moveTo(prevX, prevY );
+		ctx.lineTo(moveX, moveY);
+		ctx.closePath();
+		ctx.stroke();
+	}
 	
 	prevX = moveX;
 	prevY = moveY;
@@ -144,19 +148,31 @@ function turn( dir, degrees) {
 	drawTurtle();
 }
 
+function set(command) {
+	if(command == "PU")
+		setPenUp();
+	else if(command == "PD")
+		setPenDown();
+}
 
 function run(input) {
 	var tokens = lex(input);
 	parse(tokens);
 }
+
 function exec(){
 	var input = document.getElementById("cmd").value;
 	document.getElementById("cmd").value = "";
 	run(input);
 }
-var canvas, ctx, angle, prevX, prevY, base;
+var canvas, ctx, angle, prevX, prevY, base, penup;
 
-
+function setPenUp() {
+	penup = true;
+}
+function setPenDown() {
+	penup = false;
+}
 function drawTurtle() {
 
 	
@@ -203,11 +219,10 @@ window.onload = function () {
 	document.body.appendChild(turt);
 
 
-
 	angle = Math.PI/2;
 	prevX = 350;	prevY = 200;
 	base = 10;
+	penup = false;
 	drawTurtle();
-	
 
 }
