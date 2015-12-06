@@ -108,6 +108,8 @@ function draw( action, steps) {
 	if(action == "FW" )
 		stepsY *= (-1);
 
+	if (action == "BK")
+			stepsX *= (-1);
 	console.log(stepsX);
 	console.log(stepsY);
 	
